@@ -161,7 +161,7 @@ Finally, if `doUpdateOnlyWhenDataChanges` is `true`, the function compares the c
 
 # Selectors
 
-The `selector` argument in the `update` function is a string that specifies the property path to update in the data snapshot. The property path uses dot notation, where each dot separates nested objects or arrays. For example, a selector of `"person.name"` would update the `name` property of the `person` object.
+The `selector` is a string that specifies the property path to update in the data snapshot. The property path uses dot notation, where each dot separates nested objects or arrays. For example, a selector of `"person.name"` would update the `name` property of the `person` object.
 
 The `observedSelectors` and `ignoredSelectors` arguments are arrays of strings that allow selective updates based on the property path. Each string in the arrays is a pattern that can contain two types of wildcards:
 
