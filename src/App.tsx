@@ -1,25 +1,8 @@
-import { useEffect } from "react";
 import { Component } from "./components/Component";
 import { useStore } from "./fastContextStore";
 
 const App = () => {
   const { setStoreData } = useStore();
-
-  // useEffect(() => {
-  //   setStoreData({
-  //     array1: ["el1", "el2", "el3"],
-  //     data1: "data1",
-  //     data2: {
-  //       data1: "data2-1",
-  //     },
-  //     data3: {
-  //       data1: "data3-1",
-  //       data2: {
-  //         data1: "data3-2-1",
-  //       },
-  //     },
-  //   });
-  // }, []);
 
   return (
     <>
