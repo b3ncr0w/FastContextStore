@@ -11,14 +11,14 @@ export function createStore<T>(initData?: T) {
   const StoreContext = createContext<ReturnType<typeof useStoreCore<T>> | null>(
     null
   );
+  let isStoreInitialized = false;
 
   const StoreProvider = ({ children }: { children: ReactNode }) => {
     const store = useStoreCore<T>(initData);
-    const isStoreInitialized = useRef(false);
 
     useEffect(() => {
-      if (!isStoreInitialized.current) {
-        isStoreInitialized.current = true;
+      if (!isStoreInitialized) {
+        isStoreInitialized = true;
         store.notify({ settings: { doForceUpdate: true } });
       }
     }, [isStoreInitialized]);
@@ -44,6 +44,8 @@ export function createStore<T>(initData?: T) {
       selector?: string,
       { doNotifyObservers = true }: { doNotifyObservers?: boolean } = {}
     ) {
+      if (selector && !isStoreInitialized) return;
+
       const prevData = getDataWithSelector(store.get(), selector);
       const data = setDataWithSelector(
         store.get(),
