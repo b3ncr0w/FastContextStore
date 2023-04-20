@@ -11,15 +11,17 @@ export function createStore<T>(initData?: T) {
   const StoreContext = createContext<ReturnType<typeof useStoreCore<T>> | null>(
     null
   );
-  let isStoreInitialized = false;
+  let isInitialized: boolean = false;
 
   const StoreProvider = ({ children }: { children: ReactNode }) => {
     const store = useStoreCore<T>(initData);
+    const isStoreInitialized = useRef(false);
 
     useEffect(() => {
-      if (!isStoreInitialized) {
-        isStoreInitialized = true;
+      if (!isStoreInitialized.current) {
+        isStoreInitialized.current = true;
         store.notify({ settings: { doForceUpdate: true } });
+        isInitialized = true;
       }
     }, [isStoreInitialized]);
 
@@ -40,16 +42,18 @@ export function createStore<T>(initData?: T) {
     }
 
     function setStoreData<T>(
-      value: ((prev: T | any) => T | any) | object | string | number | boolean,
+      value: ((prev: T) => T) | T,
       selector?: string,
       { doNotifyObservers = true }: { doNotifyObservers?: boolean } = {}
     ) {
-      if (selector && !isStoreInitialized) return;
+      if (selector && !isInitialized) return;
 
       const prevData = getDataWithSelector(store.get(), selector);
       const data = setDataWithSelector(
         store.get(),
-        typeof value === "function" ? value(prevData) : value,
+        typeof value === "function"
+          ? (value as (prev: T) => T)(prevData)
+          : value,
         selector
       );
       store.set(data);
