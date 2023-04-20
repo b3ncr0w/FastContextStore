@@ -7,7 +7,7 @@ import {
 import { useStoreCore } from "./useStoreCore";
 import { SettingsType } from "./@types.store";
 
-export function createStore<T>(initData?: T) {
+export function createStore<T = any>(initData?: T) {
   const StoreContext = createContext<ReturnType<typeof useStoreCore<T>> | null>(
     null
   );
@@ -34,21 +34,21 @@ export function createStore<T>(initData?: T) {
     const store = useContext(StoreContext)!;
     if (!store) throw new Error("Store not found");
 
-    function getStoreData<T>(selector?: string, settings?: SettingsType) {
+    function getStoreData<T = any>(selector?: string, settings?: SettingsType) {
       return subscribeDataSnapshot({
         subscribe: (update) => store.subscribe(update, settings),
         getDataSnapshot: () => getDataWithSelector(store.get(), selector),
       }) as T;
     }
 
-    function setStoreData<T>(
+    function setStoreData<T = any>(
       value: ((prev: T) => T) | T,
       selector?: string,
       { doNotifyObservers = true }: { doNotifyObservers?: boolean } = {}
     ) {
       if (selector && !isInitialized) return;
 
-      const prevData = getDataWithSelector(store.get(), selector);
+      const prevData: T = getDataWithSelector(store.get(), selector);
       const data = setDataWithSelector(
         store.get(),
         typeof value === "function"
